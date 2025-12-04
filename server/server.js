@@ -11,9 +11,21 @@ connectDB();
 
 const app = express();
 
-// Middleware
+// ✅ CORS Configuration - Updated to match frontend
+app.use(cors({
+  origin: 'http://localhost:5173', // Frontend URL
+  credentials: true
+}));
+
+// Body parser middleware
 app.use(express.json());
-app.use(cors());
+app.use(express.urlencoded({ extended: false }));
+
+// Logging middleware
+app.use((req, res, next) => {
+  console.log(`📩 ${req.method} ${req.path}`);
+  next();
+});
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
@@ -23,8 +35,9 @@ app.get('/', (req, res) => {
   res.json({ message: '🚀 StudyTrack API is running' });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
   console.log(`🔥 Server running on port ${PORT}`);
+  console.log(`📍 Server URL: http://localhost:${PORT}`);
 });
