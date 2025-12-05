@@ -105,7 +105,7 @@ const Dashboard = () => {
                 </div>
                 <div>
                   <h1 className="text-3xl font-bold gradient-text">
-                    Welcome back, {user?.name}! 👋
+                    Welcome back, {user?.name}! 
                   </h1>
                   <p className="text-gray-400 text-sm">{user?.email}</p>
                 </div>

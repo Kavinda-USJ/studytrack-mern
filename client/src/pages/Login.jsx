@@ -110,13 +110,13 @@ const Login = () => {
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="input-field pl-12"
+                className="w-full pl-11 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl focus:outline-none focus:bg-white/10 focus:border-white/20 focus:shadow-[0_0_0_3px_rgba(241,89,70,0.1)] transition-all text-white placeholder:text-gray-500"
                 placeholder="john@example.com"
               />
             </div>
@@ -132,13 +132,13 @@ const Login = () => {
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
               <input
                 type="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="input-field pl-12"
+                className="w-full pl-11 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl focus:outline-none focus:bg-white/10 focus:border-white/20 focus:shadow-[0_0_0_3px_rgba(241,89,70,0.1)] transition-all text-white placeholder:text-gray-500"
                 placeholder="••••••••"
               />
             </div>
