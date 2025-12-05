@@ -11,9 +11,9 @@ connectDB();
 
 const app = express();
 
-// ✅ CORS Configuration - Updated to match frontend
+// CORS Configuration
 app.use(cors({
-  origin: 'http://localhost:5173', // Frontend URL
+  origin: 'http://localhost:5173',
   credentials: true
 }));
 
@@ -29,6 +29,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/tasks', require('./routes/taskRoutes')); // ✅ Add this line
 
 // Test route
 app.get('/', (req, res) => {

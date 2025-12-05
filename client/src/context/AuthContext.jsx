@@ -7,6 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Check if user is logged in on app load
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
@@ -23,6 +24,17 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
+  // ✅ ADD THIS - Refresh user data
+  const refreshUser = async () => {
+    try {
+      const { data } = await API.get('/auth/me');
+      setUser(data);
+    } catch (error) {
+      console.error('Error refreshing user:', error);
+    }
+  };
+
+  // Register function
   const register = async (name, email, password) => {
     try {
       const { data } = await API.post('/auth/register', {
@@ -41,6 +53,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Login function
   const login = async (email, password) => {
     try {
       const { data } = await API.post('/auth/login', { email, password });
@@ -55,13 +68,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Logout function
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, register, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, register, login, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
