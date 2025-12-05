@@ -64,11 +64,11 @@ const Dashboard = () => {
     },
     {
       title: 'Pomodoro Timer',
-      description: 'Focus sessions (Coming soon)',
+      description: 'Focus with 25-minute sessions',
       icon: Timer,
-      action: () => {},
+      action: () => navigate('/pomodoro'),
       color: 'from-orange-500 to-red-500',
-      disabled: true,
+      disabled: false, // ✅ ENABLED NOW
     },
     {
       title: 'Set Goals',
