@@ -11,13 +11,8 @@ connectDB();
 
 const app = express();
 
-// ✅ CORS Configuration - MUST be before routes
-app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// ✅ Simple CORS - allows all origins
+app.use(cors());
 
 // Body parser middleware
 app.use(express.json());
