@@ -35,6 +35,8 @@ const Goals = () => {
   // Modal states
   const [showAddModal, setShowAddModal] = useState(false);
   const [filter, setFilter] = useState('active');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   // New goal form
   const [newGoal, setNewGoal] = useState({
@@ -120,28 +122,66 @@ const Goals = () => {
   };
 
   const handleAddGoal = async () => {
-    if (!newGoal.title || !newGoal.target) {
-      alert('Please fill in title and target');
+    console.log('🎯 handleAddGoal called');
+    console.log('📝 Form data:', newGoal);
+    
+    // Clear previous errors
+    setError('');
+    
+    // Validation
+    if (!newGoal.title || !newGoal.title.trim()) {
+      setError('Please enter a goal title');
+      console.log('❌ Validation failed: No title');
       return;
     }
 
-    const result = await createGoal({
-      type: newGoal.type,
-      title: newGoal.title,
-      target: parseInt(newGoal.target),
-      unit: newGoal.unit,
-      description: newGoal.description,
-    });
+    if (!newGoal.target || parseInt(newGoal.target) <= 0) {
+      setError('Please enter a valid target amount (greater than 0)');
+      console.log('❌ Validation failed: Invalid target');
+      return;
+    }
 
-    if (result.success) {
-      setShowAddModal(false);
-      setNewGoal({ type: 'daily', title: '', target: '', unit: 'minutes', description: '' });
+    setIsSubmitting(true);
+    console.log('🚀 Submitting goal...');
+
+    try {
+      const goalData = {
+        type: newGoal.type,
+        title: newGoal.title.trim(),
+        target: parseInt(newGoal.target),
+        unit: newGoal.unit,
+        description: newGoal.description.trim(),
+      };
+
+      console.log('📤 Sending data:', goalData);
+
+      const result = await createGoal(goalData);
+      
+      console.log('📥 Result:', result);
+
+      if (result.success) {
+        console.log('✅ Goal created successfully!');
+        setShowAddModal(false);
+        setNewGoal({ type: 'daily', title: '', target: '', unit: 'minutes', description: '' });
+        setError('');
+      } else {
+        console.log('❌ Goal creation failed:', result.message);
+        setError(result.message || 'Failed to create goal. Please try again.');
+      }
+    } catch (err) {
+      console.error('💥 Error in handleAddGoal:', err);
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleDeleteGoal = async (goalId) => {
     if (window.confirm('Are you sure you want to delete this goal?')) {
-      await deleteGoal(goalId);
+      const result = await deleteGoal(goalId);
+      if (!result.success) {
+        alert(result.message || 'Failed to delete goal');
+      }
     }
   };
 
@@ -437,6 +477,17 @@ const Goals = () => {
                 </button>
               </div>
 
+              {/* Error Message */}
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="bg-red-500/20 backdrop-blur-xl border border-red-500/30 text-red-400 px-4 py-3 rounded-xl mb-6"
+                >
+                  {error}
+                </motion.div>
+              )}
+
               <div className="space-y-6">
                 {/* Goal Type Selection */}
                 <div>
@@ -524,11 +575,20 @@ const Goals = () => {
                 {/* Submit */}
                 <button
                   onClick={handleAddGoal}
-                  disabled={!newGoal.title || !newGoal.target}
+                  disabled={isSubmitting || !newGoal.title || !newGoal.target}
                   className="btn-primary"
                 >
-                  <Target className="w-5 h-5 inline mr-2" />
-                  Create Goal
+                  {isSubmitting ? (
+                    <>
+                      <div className="spinner w-5 h-5 inline mr-2 border-white"></div>
+                      Creating Goal...
+                    </>
+                  ) : (
+                    <>
+                      <Target className="w-5 h-5 inline mr-2" />
+                      Create Goal
+                    </>
+                  )}
                 </button>
               </div>
             </motion.div>
