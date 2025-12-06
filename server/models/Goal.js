@@ -20,6 +20,7 @@ const goalSchema = new mongoose.Schema(
     description: {
       type: String,
       trim: true,
+      default: '',
     },
     target: {
       type: Number,
@@ -55,37 +56,14 @@ const goalSchema = new mongoose.Schema(
       type: Date,
     },
     subject: {
-      type: String, // For subject-specific goals
+      type: String,
       trim: true,
+      default: '',
     },
   },
   {
     timestamps: true,
   }
 );
-
-// Calculate progress percentage (virtual field)
-goalSchema.virtual('progress').get(function() {
-  return Math.min((this.current / this.target) * 100, 100);
-});
-
-// Check if goal is expired (virtual field)
-goalSchema.virtual('isExpired').get(function() {
-  return new Date() > this.endDate;
-});
-
-// Auto-mark as completed when target is reached
-// ✅ FIXED: Added function keyword and proper callback
-goalSchema.pre('save', function(next) {
-  if (this.current >= this.target && !this.completed) {
-    this.completed = true;
-    this.completedAt = new Date();
-  }
-  next(); // ✅ This was the issue - next() wasn't being called properly
-});
-
-// Enable virtuals in JSON
-goalSchema.set('toJSON', { virtuals: true });
-goalSchema.set('toObject', { virtuals: true });
 
 module.exports = mongoose.model('Goal', goalSchema);

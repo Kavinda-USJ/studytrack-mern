@@ -9,6 +9,7 @@ const getGoals = async (req, res) => {
     const goals = await Goal.find({ user: req.user._id }).sort({ createdAt: -1 });
     res.json(goals);
   } catch (error) {
+    console.error('Error fetching goals:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -31,6 +32,7 @@ const getGoal = async (req, res) => {
 
     res.json(goal);
   } catch (error) {
+    console.error('Error fetching goal:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -41,6 +43,8 @@ const getGoal = async (req, res) => {
 const createGoal = async (req, res) => {
   try {
     const { type, title, description, target, unit, endDate, subject } = req.body;
+
+    console.log('📝 Creating goal with data:', req.body);
 
     if (!title || !target || !unit || !type) {
       return res.status(400).json({ message: 'Please provide title, target, unit, and type' });
@@ -69,15 +73,17 @@ const createGoal = async (req, res) => {
       user: req.user._id,
       type,
       title,
-      description,
+      description: description || '',
       target,
       unit,
       endDate: calculatedEndDate,
-      subject,
+      subject: subject || '',
     });
 
+    console.log('✅ Goal created successfully:', goal._id);
     res.status(201).json(goal);
   } catch (error) {
+    console.error('❌ Error creating goal:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -106,6 +112,7 @@ const updateGoal = async (req, res) => {
 
     res.json(updatedGoal);
   } catch (error) {
+    console.error('Error updating goal:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -131,10 +138,17 @@ const updateGoalProgress = async (req, res) => {
     // Increment progress
     goal.current = Math.min(goal.current + (increment || 1), goal.target);
     
+    // ✅ Check if goal is completed (moved from model to controller)
+    if (goal.current >= goal.target && !goal.completed) {
+      goal.completed = true;
+      goal.completedAt = new Date();
+    }
+    
     await goal.save();
 
     res.json(goal);
   } catch (error) {
+    console.error('Error updating progress:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -159,6 +173,7 @@ const deleteGoal = async (req, res) => {
 
     res.json({ message: 'Goal deleted successfully' });
   } catch (error) {
+    console.error('Error deleting goal:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -192,6 +207,7 @@ const getGoalStats = async (req, res) => {
 
     res.json(stats);
   } catch (error) {
+    console.error('Error fetching stats:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -217,6 +233,7 @@ const toggleGoalActive = async (req, res) => {
 
     res.json(goal);
   } catch (error) {
+    console.error('Error toggling goal:', error);
     res.status(500).json({ message: error.message });
   }
 };
