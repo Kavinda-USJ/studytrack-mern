@@ -81,11 +81,11 @@ const Dashboard = () => {
     },
     {
       title: 'View Calendar',
-      description: 'Check your schedule (Coming soon)',
+      description: 'Check and manage your schedule', // Changed description
       icon: Calendar,
-      action: () => {},
+      action: () => navigate('/calendar'), // Changed this line
       color: 'from-teal-500 to-cyan-500',
-      disabled: true,
+      disabled: false, // Changed from true to false
     },
   ];
 

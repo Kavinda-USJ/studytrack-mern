@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import Tasks from './pages/Tasks';
 import Pomodoro from './pages/Pomodoro';
 import Goals from './pages/Goals';
+import Calendar from "./pages/Calendar";
 
 function App() {
   return (
@@ -51,6 +52,14 @@ function App() {
                     <Goals />
                   </ProtectedRoute>
                 }
+              />
+              <Route
+               path="/calendar" 
+               element={
+                <ProtectedRoute>
+                  <Calendar />
+                  </ProtectedRoute>
+               } 
               />
             </Routes>
           </Router>

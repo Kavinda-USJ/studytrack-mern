@@ -27,7 +27,8 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/tasks', require('./routes/taskRoutes'));
-app.use('/api/goals', require('./routes/goalRoutes')); // ✅ ADD THIS LINE
+app.use('/api/goals', require('./routes/goalRoutes')); 
+app.use('/api/events', require('./routes/eventRoutes'));
 
 // Test route
 app.get('/', (req, res) => {
