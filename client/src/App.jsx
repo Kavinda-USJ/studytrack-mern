@@ -10,6 +10,7 @@ import Tasks from './pages/Tasks';
 import Pomodoro from './pages/Pomodoro';
 import Goals from './pages/Goals';
 import Calendar from "./pages/Calendar";
+import Analytics from './pages/Analytics';
 
 function App() {
   return (
@@ -54,12 +55,21 @@ function App() {
                 }
               />
               <Route
-               path="/calendar" 
-               element={
-                <ProtectedRoute>
-                  <Calendar />
+                path="/calendar" 
+                element={
+                  <ProtectedRoute>
+                    <Calendar />
                   </ProtectedRoute>
-               } 
+                } 
+              />
+              {/* ✅ FIXED - Added ProtectedRoute */}
+              <Route 
+                path="/analytics"
+                element={
+                  <ProtectedRoute>
+                    <Analytics />
+                  </ProtectedRoute>
+                }
               />
             </Routes>
           </Router>

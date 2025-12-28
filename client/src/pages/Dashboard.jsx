@@ -11,7 +11,8 @@ import {
   Timer, 
   LogOut,
   Calendar,
-  Target
+  Target,
+  BarChart3
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -80,12 +81,20 @@ const Dashboard = () => {
       disabled: false, // ✅ ENABLED NOW
     },
     {
-      title: 'View Calendar',
-      description: 'Check and manage your schedule', // Changed description
-      icon: Calendar,
-      action: () => navigate('/calendar'), // Changed this line
-      color: 'from-teal-500 to-cyan-500',
-      disabled: false, // Changed from true to false
+      title: 'View Analytics',
+      description: 'Track your study performance',
+      icon: BarChart3,  // Changed to BarChart3
+      action: () => navigate('/analytics'),
+      color: 'from-blue-500 to-indigo-500',
+      disabled: false,
+    },
+    {
+      title: 'View Analytics',
+      description: 'Track your study performance',
+      icon: TrendingUp,
+      action: () => navigate('/analytics'),
+      color: 'from-blue-500 to-indigo-500',
+      disabled: false,
     },
   ];
 
