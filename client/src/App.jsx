@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { TaskProvider } from './context/TaskContext';
-import { GoalProvider } from './context/GoalContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -51,23 +50,6 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Goals />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/calendar" 
-                element={
-                  <ProtectedRoute>
-                    <Calendar />
-                  </ProtectedRoute>
-                } 
-              />
-              {/* ✅ FIXED - Added ProtectedRoute */}
-              <Route 
-                path="/analytics"
-                element={
-                  <ProtectedRoute>
-                    <Analytics />
                   </ProtectedRoute>
                 }
               />

@@ -62,7 +62,6 @@ const Dashboard = () => {
       icon: BookOpen,
       action: () => navigate('/tasks'),
       color: 'from-indigo-500 to-purple-500',
-      disabled: false,
     },
     {
       title: 'Pomodoro Timer',
@@ -70,15 +69,15 @@ const Dashboard = () => {
       icon: Timer,
       action: () => navigate('/pomodoro'),
       color: 'from-orange-500 to-red-500',
-      disabled: false,
+      disabled: false, // ✅ ENABLED NOW
     },
     {
       title: 'Set Goals',
-      description: 'Define and track your study goals',
+      description: 'Define your study goals (Coming soon)',
       icon: Target,
-      action: () => navigate('/goals'),
+      action: () => {},
       color: 'from-pink-500 to-rose-500',
-      disabled: false, // ✅ ENABLED NOW
+      disabled: true,
     },
     {
       title: 'View Analytics',
@@ -115,7 +114,7 @@ const Dashboard = () => {
                 </div>
                 <div>
                   <h1 className="text-3xl font-bold gradient-text">
-                    Welcome back, {user?.name}! 👋
+                    Welcome back, {user?.name}! 
                   </h1>
                   <p className="text-gray-400 text-sm">{user?.email}</p>
                 </div>
