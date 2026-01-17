@@ -1,10 +1,14 @@
+require('dotenv').config();
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const analyticsRoutes = require('./routes/analytics');
+const aiRoutes = require('./routes/aiRoutes');
 
 // Load env vars
-dotenv.config();
+
+
 
 // Connect to database
 connectDB();
@@ -20,14 +24,17 @@ app.use(express.urlencoded({ extended: false }));
 
 // Logging middleware
 app.use((req, res, next) => {
-  console.log(`📩 ${req.method} ${req.path}`);
+  console.log(`📩 ${req.method} ${req.path}`); // ✅ FIXED - parentheses, not backticks
   next();
 });
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/tasks', require('./routes/taskRoutes'));
-app.use('/api/goals', require('./routes/goalRoutes')); // ✅ ADD THIS LINE
+app.use('/api/goals', require('./routes/goalRoutes')); 
+app.use('/api/events', require('./routes/eventRoutes'));
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Test route
 app.get('/', (req, res) => {
@@ -37,6 +44,6 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  console.log(`🔥 Server running on port ${PORT}`);
-  console.log(`📍 Server URL: http://localhost:${PORT}`);
+  console.log(`🔥 Server running on port ${PORT}`); // ✅ FIXED
+  console.log(`📍 Server URL: http://localhost:${PORT}`); // ✅ FIXED
 });
