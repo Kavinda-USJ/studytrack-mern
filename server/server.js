@@ -1,11 +1,14 @@
+require('dotenv').config();
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const analyticsRoutes = require('./routes/analytics');
+const aiRoutes = require('./routes/aiRoutes');
 
 // Load env vars
-dotenv.config();
+
+
 
 // Connect to database
 connectDB();
@@ -31,6 +34,7 @@ app.use('/api/tasks', require('./routes/taskRoutes'));
 app.use('/api/goals', require('./routes/goalRoutes')); 
 app.use('/api/events', require('./routes/eventRoutes'));
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Test route
 app.get('/', (req, res) => {

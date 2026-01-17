@@ -10,10 +10,10 @@ import {
   BookOpen, 
   Timer, 
   LogOut,
-  Calendar,
   Target,
   BarChart3
 } from 'lucide-react';
+import AIAssistant from '../components/AIAssistant'; // ✅ ADD THIS LINE
 
 const Dashboard = () => {
   const { user, logout, refreshUser } = useContext(AuthContext);
@@ -78,20 +78,12 @@ const Dashboard = () => {
       icon: Target,
       action: () => navigate('/goals'),
       color: 'from-pink-500 to-rose-500',
-      disabled: false, // ✅ ENABLED NOW
-    },
-    {
-      title: 'View Analytics',
-      description: 'Track your study performance',
-      icon: BarChart3,  // Changed to BarChart3
-      action: () => navigate('/analytics'),
-      color: 'from-blue-500 to-indigo-500',
       disabled: false,
     },
     {
       title: 'View Analytics',
       description: 'Track your study performance',
-      icon: TrendingUp,
+      icon: BarChart3,
       action: () => navigate('/analytics'),
       color: 'from-blue-500 to-indigo-500',
       disabled: false,
@@ -206,7 +198,10 @@ const Dashboard = () => {
           </div>
         </motion.div>
 
-        {/* Recent Activity Placeholder */}
+        {/* ✅ AI ASSISTANT - ADD THIS COMPONENT */}
+        <AIAssistant />
+
+        {/* Recent Activity */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
