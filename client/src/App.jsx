@@ -7,7 +7,6 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Tasks from './pages/Tasks';
 import Pomodoro from './pages/Pomodoro';
-import Goals from './pages/Goals';
 import Calendar from "./pages/Calendar";
 import Analytics from './pages/Analytics';
 
@@ -15,8 +14,7 @@ function App() {
   return (
     <AuthProvider>
       <TaskProvider>
-        <GoalProvider>
-          <Router>
+        <Router>
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" />} />
               <Route path="/login" element={<Login />} />
@@ -46,16 +44,23 @@ function App() {
                 }
               />
               <Route
-                path="/goals"
+                path="/calendar"
                 element={
                   <ProtectedRoute>
-                    <Goals />
+                    <Calendar />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/analytics"
+                element={
+                  <ProtectedRoute>
+                    <Analytics />
                   </ProtectedRoute>
                 }
               />
             </Routes>
           </Router>
-        </GoalProvider>
       </TaskProvider>
     </AuthProvider>
   );
