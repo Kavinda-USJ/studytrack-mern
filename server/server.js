@@ -28,12 +28,9 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/tasks', require('./routes/taskRoutes'));
-<<<<<<< HEAD
-app.use('/api/goals', require('./routes/goalRoutes')); 
+app.use('/api/goals', require('./routes/goalRoutes'));
 app.use('/api/events', require('./routes/eventRoutes'));
 app.use('/api/analytics', analyticsRoutes);
-=======
->>>>>>> parent of e5c76f2 (Merge pull request #1 from Kavinda-USJ/dev-lahiru)
 
 // Test route
 app.get('/', (req, res) => {
