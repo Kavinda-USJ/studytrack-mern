@@ -6,10 +6,6 @@ const connectDB = require('./config/db');
 const analyticsRoutes = require('./routes/analytics');
 const aiRoutes = require('./routes/aiRoutes');
 
-// Load env vars
-
-
-
 // Connect to database
 connectDB();
 
