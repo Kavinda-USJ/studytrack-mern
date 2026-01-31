@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TaskContext } from '../context/TaskContext';
 import { motion } from 'framer-motion';
@@ -11,33 +11,60 @@ import {
   Clock, 
   LayoutList,
   ArrowLeft,
-  Search
+  Search,
+  ArrowUpDown,
+  BookOpen
 } from 'lucide-react';
 
 const Tasks = () => {
-  const { tasks, loading } = useContext(TaskContext);
+  const { tasks, loading, fetchTasks } = useContext(TaskContext);
   const navigate = useNavigate();
   const [showAddModal, setShowAddModal] = useState(false);
   const [filter, setFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [subjectFilter, setSubjectFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('createdAt');
 
-  const filteredTasks = tasks.filter((task) => {
-    const matchesFilter = 
-      filter === 'all' ? true :
-      filter === 'completed' ? task.completed :
-      filter === 'pending' ? !task.completed : true;
-    
-    const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         task.subject.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    return matchesFilter && matchesSearch;
-  });
+  // Get unique subjects from tasks
+  const uniqueSubjects = ['all', ...new Set(tasks.map(task => task.subject))];
+
+  const filteredTasks = tasks
+    .filter((task) => {
+      const matchesFilter = 
+        filter === 'all' ? true :
+        filter === 'completed' ? task.completed :
+        filter === 'pending' ? !task.completed : true;
+      
+      const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           task.subject.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesSubject = subjectFilter === 'all' ? true : task.subject === subjectFilter;
+      
+      return matchesFilter && matchesSearch && matchesSubject;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'deadline') {
+        const dateA = a.deadline ? new Date(a.deadline) : new Date('2099-12-31');
+        const dateB = b.deadline ? new Date(b.deadline) : new Date('2099-12-31');
+        return dateA - dateB;
+      } else {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      }
+    });
 
   const filterOptions = [
     { id: 'all', label: 'All Tasks', count: tasks.length, icon: LayoutList },
     { id: 'pending', label: 'Pending', count: tasks.filter(t => !t.completed).length, icon: Clock },
     { id: 'completed', label: 'Completed', count: tasks.filter(t => t.completed).length, icon: CheckCircle2 },
   ];
+
+  // Handler for when a new task is added
+  const handleTaskAdded = () => {
+    // Refresh the task list
+    if (fetchTasks) {
+      fetchTasks();
+    }
+  };
 
   return (
     <div className="min-h-screen p-4 md:p-8">
@@ -77,8 +104,8 @@ const Tasks = () => {
           </div>
         </motion.div>
 
-        {/* Search and Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        {/* Search, Filters, and Sort */}
+        <div className="grid grid-cols-1 gap-4 mb-6">
           {/* Search Bar */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -96,7 +123,7 @@ const Tasks = () => {
             />
           </motion.div>
 
-          {/* Filter Buttons */}
+          {/* Status Filter Buttons */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -119,7 +146,71 @@ const Tasks = () => {
               </button>
             ))}
           </motion.div>
+
+          {/* Subject Filter & Sort Controls */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          >
+            {/* Subject Filter Dropdown */}
+            <div className="relative">
+              <BookOpen className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              <select
+                value={subjectFilter}
+                onChange={(e) => setSubjectFilter(e.target.value)}
+                className="input-field pl-12 appearance-none cursor-pointer"
+              >
+                <option value="all">All Subjects</option>
+                {uniqueSubjects.filter(s => s !== 'all').map((subject) => (
+                  <option key={subject} value={subject}>
+                    {subject}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sort By Dropdown */}
+            <div className="relative">
+              <ArrowUpDown className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="input-field pl-12 appearance-none cursor-pointer"
+              >
+                <option value="createdAt">Sort by: Newest First</option>
+                <option value="deadline">Sort by: Deadline (Nearest First)</option>
+              </select>
+            </div>
+          </motion.div>
         </div>
+
+        {/* Active Filters Display */}
+        {(subjectFilter !== 'all' || sortBy !== 'createdAt') && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-4 flex flex-wrap gap-2"
+          >
+            {subjectFilter !== 'all' && (
+              <span className="px-3 py-1.5 bg-primary-500/20 border border-primary-500/40 text-primary-300 rounded-full text-sm flex items-center gap-2">
+                Subject: {subjectFilter}
+                <button
+                  onClick={() => setSubjectFilter('all')}
+                  className="hover:text-primary-200"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+            {sortBy === 'deadline' && (
+              <span className="px-3 py-1.5 bg-secondary-500/20 border border-secondary-500/40 text-secondary-300 rounded-full text-sm">
+                Sorted by Deadline
+              </span>
+            )}
+          </motion.div>
+        )}
 
         {/* Tasks List */}
         {loading ? (
@@ -136,11 +227,11 @@ const Tasks = () => {
               <LayoutList className="w-8 h-8 text-white" />
             </div>
             <p className="text-gray-400 text-lg mb-2">
-              {searchQuery ? 'No tasks found matching your search' : 
+              {searchQuery || subjectFilter !== 'all' ? 'No tasks found matching your filters' : 
                filter === 'all' ? 'No tasks yet. Create your first task!' :
                `No ${filter} tasks`}
             </p>
-            {!searchQuery && filter === 'all' && (
+            {!searchQuery && filter === 'all' && subjectFilter === 'all' && (
               <button
                 onClick={() => setShowAddModal(true)}
                 className="mt-4 px-6 py-2.5 bg-primary-500/20 border border-primary-500/40 text-primary-300 rounded-lg hover:bg-primary-500/30 transition-all"
@@ -166,7 +257,12 @@ const Tasks = () => {
         )}
 
         {/* Add Task Modal */}
-        {showAddModal && <AddTaskModal onClose={() => setShowAddModal(false)} />}
+        {showAddModal && (
+          <AddTaskModal 
+            onClose={() => setShowAddModal(false)} 
+            onTaskAdded={handleTaskAdded}
+          />
+        )}
       </div>
     </div>
   );

@@ -1,12 +1,32 @@
 const Task = require('../models/Task');
 const User = require('../models/User');
 
-// @desc    Get all tasks for logged-in user
-// @route   GET /api/tasks
+// @desc    Get all tasks for logged-in user with filtering and sorting
+// @route   GET /api/tasks?subject=xxx&sortBy=deadline
 // @access  Private
 const getTasks = async (req, res) => {
   try {
-    const tasks = await Task.find({ user: req.user._id }).sort({ createdAt: -1 });
+    const { subject, sortBy } = req.query;
+    
+    // Build query
+    let query = { user: req.user._id };
+    
+    // Filter by subject if provided
+    if (subject && subject !== 'all') {
+      query.subject = subject;
+    }
+    
+    // Determine sort order
+    let sortOption = { createdAt: -1 }; // Default: newest first
+    
+    if (sortBy === 'deadline') {
+      sortOption = { deadline: 1 }; // Ascending (nearest deadline first)
+    } else if (sortBy === 'priority') {
+      sortOption = { priority: -1 }; // High to Low
+    }
+    
+    const tasks = await Task.find(query).sort(sortOption);
+    
     res.json(tasks);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -42,8 +62,23 @@ const createTask = async (req, res) => {
   try {
     const { title, subject, description, deadline, priority } = req.body;
 
+    // Validation: Title and Subject are required
     if (!title || !subject) {
       return res.status(400).json({ message: 'Please add title and subject' });
+    }
+
+    // Validation: Check if deadline is in the past
+    if (deadline) {
+      const selectedDate = new Date(deadline);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (selectedDate < today) {
+        return res.status(400).json({ 
+          message: 'Deadline cannot be in the past',
+          field: 'deadline'
+        });
+      }
     }
 
     const task = await Task.create({
@@ -75,6 +110,20 @@ const updateTask = async (req, res) => {
     // Make sure user owns the task
     if (task.user.toString() !== req.user._id.toString()) {
       return res.status(401).json({ message: 'Not authorized' });
+    }
+
+    // Validation: Check if new deadline is in the past
+    if (req.body.deadline) {
+      const selectedDate = new Date(req.body.deadline);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (selectedDate < today) {
+        return res.status(400).json({ 
+          message: 'Deadline cannot be in the past',
+          field: 'deadline'
+        });
+      }
     }
 
     const updatedTask = await Task.findByIdAndUpdate(

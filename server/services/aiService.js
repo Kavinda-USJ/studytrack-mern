@@ -1,7 +1,6 @@
-// backend/services/aiService.js
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "AIzaSyAcyf9nRQUGktTuT2L-f7we_0e5Rilw1_I";
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 console.log('🔧 AI Service Loading...');
 console.log('🔑 Gemini API Key loaded:', !!GEMINI_API_KEY);
@@ -16,7 +15,7 @@ try {
   genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
   console.log('✅ GoogleGenerativeAI instance created');
   
-  // Use gemini-2.5-flash (your available model)
+  // Use gemini-2.5-flash (your original working model)
   model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
   console.log('✅ Gemini model initialized: gemini-2.5-flash');
 } catch (error) {
